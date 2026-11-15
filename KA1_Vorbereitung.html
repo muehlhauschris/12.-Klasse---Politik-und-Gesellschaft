@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Übungen zur 1. Kurzarbeit PuG – 12FI2</title>
+<style>
+  :root { --petrol:#1f5f6b; --petrol-hell:#e3eef0; --bernstein:#c8841a; --bernstein-hell:#fbf1dd; --rot:#a4231f; --rot-hell:#f8e4e2;
+          --gruen:#2f7d4f; --gruen-hell:#e3f2e8; --tinte:#1c2530; --grau:#5f6b76; --papier:#fbfaf6; --karte:#ffffff; --linie:#d9d4c7; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:var(--papier); color:var(--tinte); font-family:"Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+         font-size:17px; line-height:1.55; }
+  header.kopf { background:var(--petrol); color:#fff; padding:28px 20px 22px; }
+  header.kopf .innen, main, footer { max-width:860px; margin:0 auto; }
+  header.kopf p.ober { margin:0 0 6px; font-family:Consolas, "Courier New", monospace; font-size:13px; letter-spacing:.08em; text-transform:uppercase; opacity:.85; }
+  header.kopf h1 { margin:0 0 8px; font-size:30px; line-height:1.2; text-wrap:balance; }
+  header.kopf p { margin:0; max-width:60ch; }
+  nav { position:sticky; top:0; z-index:5; background:var(--papier); border-bottom:1px solid var(--linie); }
+  nav .innen { max-width:860px; margin:0 auto; padding:8px 20px; display:flex; gap:8px; overflow-x:auto; }
+  nav a { flex:none; text-decoration:none; color:var(--petrol); border:1px solid var(--petrol); border-radius:999px; padding:4px 12px; font-size:14px; }
+  nav a:hover, nav a:focus-visible { background:var(--petrol); color:#fff; }
+  main { padding:8px 20px 40px; }
+  section { padding-top:26px; }
+  h2 { font-size:23px; margin:0 0 4px; color:var(--petrol); text-wrap:balance; }
+  h2 small { display:block; font-family:Consolas, "Courier New", monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--grau); font-weight:normal; }
+  h3 { font-size:17px; margin:18px 0 6px; }
+  p { margin:0 0 10px; max-width:68ch; }
+  ul { margin:0 0 10px; padding-left:22px; max-width:68ch; }
+  li { margin-bottom:4px; }
+  .karte { background:var(--karte); border:1px solid var(--linie); border-radius:8px; padding:14px 16px; margin:12px 0; }
+  .karte.merke { border-left:5px solid var(--bernstein); background:var(--bernstein-hell); }
+  .karte.fehler { border-left:5px solid var(--rot); background:var(--rot-hell); }
+  .karte h3 { margin-top:0; }
+  .tabelle { overflow-x:auto; margin:12px 0; }
+  table { border-collapse:collapse; width:100%; min-width:520px; background:var(--karte); font-size:16px; }
+  th, td { border:1px solid var(--linie); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:var(--petrol-hell); }
+  .norm { font-family:Consolas, "Courier New", monospace; font-size:.92em; white-space:nowrap; color:var(--petrol); font-weight:bold; }
+  .koennen label { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-bottom:1px dashed var(--linie); cursor:pointer; }
+  .koennen label:last-child { border-bottom:0; }
+  .koennen input { width:20px; height:20px; margin-top:3px; accent-color:var(--petrol); flex:none; }
+  .frage { background:var(--karte); border:1px solid var(--linie); border-radius:8px; padding:14px 16px; margin:14px 0; }
+  .frage p.text { font-weight:600; margin-bottom:8px; }
+  .frage .nr { font-family:Consolas, "Courier New", monospace; color:var(--grau); font-size:13px; }
+  .frage button.opt { display:block; width:100%; text-align:left; font:inherit; color:inherit; background:#fff; border:1px solid var(--linie);
+                      border-radius:6px; padding:9px 12px; margin:6px 0; cursor:pointer; }
+  .frage button.opt:hover:not(:disabled), .frage button.opt:focus-visible { border-color:var(--petrol); outline:none; box-shadow:0 0 0 2px var(--petrol-hell); }
+  .frage button.opt:disabled { cursor:default; color:var(--tinte); }
+  .frage button.opt.richtig { background:var(--gruen-hell); border-color:var(--gruen); }
+  .frage button.opt.falsch { background:var(--rot-hell); border-color:var(--rot); }
+  .frage .erkl { display:none; margin-top:8px; padding:8px 12px; border-left:4px solid var(--petrol); background:var(--petrol-hell); border-radius:0 6px 6px 0; }
+  .frage.fertig .erkl { display:block; }
+  .lesen { font-family:Consolas, "Courier New", monospace; font-size:14px; color:var(--petrol); background:var(--petrol-hell); border-radius:6px; padding:6px 10px; display:inline-block; margin:4px 0 4px; }
+  textarea { width:100%; min-height:92px; font:inherit; padding:8px 10px; border:1px solid var(--linie); border-radius:6px; resize:vertical; background:#fff; color:inherit; }
+  textarea:focus-visible { outline:none; border-color:var(--petrol); box-shadow:0 0 0 2px var(--petrol-hell); }
+  .schlagzeile { border:1px solid var(--grau); border-radius:4px; background:#fff; padding:10px 14px; margin:8px 0 10px; font-family:Georgia, "Times New Roman", serif; font-size:20px; font-weight:bold; line-height:1.3; }
+  .schlagzeile span { display:block; font-family:"Segoe UI", system-ui, Arial, sans-serif; font-size:11px; letter-spacing:.12em; text-transform:uppercase; border-bottom:2px solid var(--tinte); padding-bottom:3px; margin-bottom:8px; }
+  .schlagzeile small { display:block; font-family:"Segoe UI", system-ui, Arial, sans-serif; font-size:12px; font-weight:normal; color:var(--grau); margin-top:8px; }
+  .kopf2 { margin:18px 0 0; }
+  .kopf2 p.text { font-weight:600; margin-bottom:8px; }
+  .kopf2 .nr { font-family:Consolas, "Courier New", monospace; color:var(--grau); font-size:13px; }
+  table.eng { min-width:0; font-size:15px; }
+  table.eng th, table.eng td { padding:6px 8px; }
+  .selbst { margin-top:8px; font-size:15px; }
+  .selbst p { margin:0 0 2px; color:var(--grau); }
+  .selbst label { display:flex; gap:8px; align-items:flex-start; padding:2px 0; cursor:pointer; }
+  .selbst input { width:18px; height:18px; margin-top:3px; accent-color:var(--petrol); flex:none; }
+  .frage button.opt.gewaehlt { border-color:var(--petrol); background:var(--petrol-hell); }
+  button.pruefen { font:inherit; background:var(--petrol); color:#fff; border:0; border-radius:6px; padding:8px 16px; margin-top:6px; cursor:pointer; }
+  button.pruefen:disabled { background:var(--linie); color:var(--grau); cursor:default; }
+  .offen p.pruef { color:var(--grau); font-size:15px; margin:6px 0 0; }
+  .stand { position:sticky; bottom:0; background:var(--tinte); color:#fff; border-radius:8px 8px 0 0; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:18px; }
+  .stand button { font:inherit; background:#fff; color:var(--tinte); border:0; border-radius:6px; padding:6px 12px; cursor:pointer; }
+  footer { padding:18px 20px 40px; color:var(--grau); font-size:14px; border-top:1px solid var(--linie); }
+  @media (max-width:560px) { body { font-size:16px; } header.kopf h1 { font-size:25px; } }
+  @media print { nav, .stand { display:none; } .frage .erkl { display:block; } body { background:#fff; } }
+</style>
+</head>
+<body>
+
+<header class="kopf"><div class="innen">
+  <p class="ober">Politik und Gesellschaft · 12FI2</p>
+  <h1>Übungen zur 1. Kurzarbeit</h1>
+  <p>Kurzarbeit am Montag, 16.11.2026 · Arbeitszeit 30 Minuten. Der Test dauert etwa 15 bis 20 Minuten. Diese Seite stellt nur die Aufgaben – das Wissen dazu steht in Ihren Fundamenta.</p>
+</div></header>
+
+<nav aria-label="Abschnitte"><div class="innen">
+  <a href="#t1">1 Organe</a><a href="#t2">2 Wehrhafte Demokratie</a><a href="#t3">3 Wahlen</a>
+  <a href="#t4">4 Grundrechte</a><a href="#check">Checkliste</a>
+</div></nav>
+
+<main>
+
+<section id="plan">
+  <div class="karte merke">
+    <h3>So gehen Sie vor</h3>
+    <p>Lesen Sie zu jedem Thema zuerst das angegebene Fundamentum und lösen Sie dann die Aufgaben. Nach jedem Kreuz sehen Sie, ob es stimmt. Bei einem Fehler lesen Sie die Stelle im Fundamentum nach. Die Beispiele sind andere als in der Kurzarbeit – es geht um das Vorgehen.</p>
+  </div>
+</section>
+
+<section id="t1">
+  <h2><small>Thema 1</small>Organe und politisches Dreieck</h2>
+  <p class="lesen">Zuerst lesen: Fundamentum zu den Organen der Bundesrepublik</p>
+  <div id="fragen1"></div>
+  <div class="frage offen">
+    <p class="text"><span class="nr">Schreibaufgabe · </span><b>Begründen</b> Sie in einem Satz, warum das Bundesverfassungsgericht zur Judikative gehört.</p>
+    <textarea aria-label="Ihre Antwort zu Thema 1" placeholder="Ihre Antwort …"></textarea>
+    <p class="pruef">Prüfen Sie Ihre Antwort anschließend mit dem Fundamentum. Der Text wird nicht gespeichert.</p>
+  </div>
+</section>
+
+<section id="t2">
+  <h2><small>Thema 2</small>Autoritäre Ansteckung und wehrhafte Demokratie</h2>
+  <p class="lesen">Zuerst lesen: Studienauszug Dahlum et al. und Fundamentum „Wehrhafte Demokratie“</p>
+
+  <div class="frage" id="a2a">
+    <p class="text"><span class="nr">Aufgabe 2a · </span>Die Tabelle zeigt Ergebnisse aus dem Experiment mit norwegischen Rekruten (Näherungswerte aus dem Studienauszug). <b>Kreuzen</b> Sie die <b>zwei</b> Aussagen <b>an</b>, die sich mit der Tabelle belegen lassen.</p>
+    <div class="tabelle"><table class="eng">
+      <tr><th>Anteil der Rekruten</th><th>Mitteilung: „eher beliebt“</th><th>Mitteilung: „eher unbeliebt“</th></tr>
+      <tr><td>stimmen der Aussage selbst zu</td><td>30 %</td><td>20 %</td></tr>
+      <tr><td>vermuten, dass die meisten anderen zustimmen</td><td>48 %</td><td>16 %</td></tr>
+    </table></div>
+    <div id="a2aopt"></div>
+    <button type="button" class="pruefen" id="a2abtn" disabled>Prüfen</button>
+    <div class="erkl" id="a2aerkl"></div>
+  </div>
+
+  <div class="kopf2">
+    <p class="text"><span class="nr">Aufgabe 2b · </span><b>Lesen</b> Sie die Schlagzeile. Was kann es nach der Studie bei Menschen bewirken, wenn sie häufig solche Schlagzeilen lesen? Gehen Sie Schritt für Schritt vor und <b>kreuzen</b> Sie jeweils die zutreffende Aussage <b>an</b>.</p>
+    <div class="schlagzeile"><span>Nachrichten</span>„Umfrage: Jeder Dritte wünscht sich weniger Parlament und mehr Durchgreifen“<small>Erfundene Schlagzeile zum Üben – keine echte Umfrage.</small></div>
+  </div>
+  <div id="fragen2b"></div>
+
+  <div class="kopf2">
+    <p class="text"><span class="nr">Aufgabe 2c · </span>Angenommen, eine Regierung mit großer Mehrheit im Bundestag will die nächsten Wahlen auf unbestimmte Zeit aussetzen. Wie schützen Art. 20 (4) GG und Art. 79 (3) GG die Demokratie auch in diesem Fall noch? Gehen Sie Schritt für Schritt vor und <b>kreuzen</b> Sie jeweils die zutreffende Aussage <b>an</b>.</p>
+  </div>
+  <div id="fragen2c"></div>
+</section>
+
+
+<section id="t3">
+  <h2><small>Thema 3</small>Wahlen und Mehrheiten</h2>
+  <p class="lesen">Zuerst lesen: Fundamentum „Wählen in Deutschland“</p>
+  <div id="fragen3"></div>
+  <div class="frage offen">
+    <p class="text"><span class="nr">Schreibaufgabe · </span><b>Begründen</b> Sie, warum Enthaltungen bei einer Änderung des Grundgesetzes wie ein Nein wirken.</p>
+    <textarea aria-label="Ihre Antwort zu Thema 3" placeholder="Ihre Antwort …"></textarea>
+    <p class="pruef">Prüfen Sie Ihre Antwort anschließend mit dem Fundamentum. Der Text wird nicht gespeichert.</p>
+  </div>
+</section>
+
+<section id="t4">
+  <h2><small>Thema 4</small>Grundrechte im Konflikt</h2>
+  <p class="lesen">Zuerst lesen: Fundamentum „Mein Recht, dein Recht“</p>
+
+  <div class="karte">
+    <h3>Übungsfall (erfunden)</h3>
+    <p>In einer Bewertungs-App können Fahrschüler ihre Fahrlehrer mit Namen bewerten. Ein Fahrschüler vergibt zwei von fünf Sternen und schreibt: „Erklärt ungeduldig, die Stunden wirken schlecht vorbereitet.“ Der Fahrlehrer verlangt, dass die Bewertung gelöscht wird.</p>
+  </div>
+
+  <div class="kopf2"><p class="text"><span class="nr">Aufgabe 4a · </span>Zwei Grundrechte stehen gegeneinander. <b>Kreuzen</b> Sie jeweils das Grundrecht mit Artikel <b>an</b>.</p></div>
+  <div id="fragen4a"></div>
+
+  <div class="kopf2"><p class="text"><span class="nr">Aufgabe 4b · </span><b>Prüfen</b> Sie den Fall Schritt für Schritt mit den drei Abwägungsfragen und <b>kreuzen</b> Sie am Ende das Urteil <b>an</b>.</p></div>
+  <div id="fragen4b"></div>
+
+  <div class="kopf2"><p class="text"><span class="nr">Aufgabe 4c · </span>Angenommen, der Fahrschüler schreibt noch weitere Sätze in die App. <b>Kreuzen</b> Sie für jeden Satz <b>an</b>, was zutrifft.</p></div>
+  <div id="fragen4c"></div>
+</section>
+
+
+<div class="stand" aria-live="polite"><span id="standtext"></span><button type="button" id="neu">Neu starten</button></div>
+
+<section id="check">
+  <h2><small>Zum Abhaken</small>Das kann ich</h2>
+  <div class="karte koennen" id="liste">
+    <label><input type="checkbox"> Ich kann die Verfassungsorgane ihrer Gewalt zuordnen und Polity, Policy, Politics unterscheiden.</label>
+    <label><input type="checkbox"> Ich kann den Befund der Studie von Dahlum et al. nennen und auf eine Nachricht anwenden.</label>
+    <label><input type="checkbox"> Ich kann erläutern, was Art. 20 (4) GG und Art. 79 (3) GG schützen.</label>
+    <label><input type="checkbox"> Ich kann begründen, welche Mehrheit ein Beschluss braucht, und nachrechnen.</label>
+    <label><input type="checkbox"> Ich kann die fünf Wahlrechtsgrundsätze benennen und zuordnen.</label>
+    <label><input type="checkbox"> Ich kann Grundrechte mit Artikel benennen und einen Fall mit den drei Fragen prüfen.</label>
+  </div>
+</section>
+
+</main>
+
+<footer>PuG 12FI2 · Maximilian-Kolbe-Schule Neumarkt i.d.OPf. · Übungen zur 1. Kurzarbeit am 16.11.2026 · Grundlage: Fundamenta und Studienauszüge.</footer>
+
+<script>
+(function () {
+  var LESEN = { 1: "Fundamentum zu den Organen", 2: "Studienauszug Dahlum et al. und Fundamentum „Wehrhafte Demokratie“",
+                3: "Fundamentum „Wählen in Deutschland“", 4: "Fundamentum „Mein Recht, dein Recht“" };
+  var FRAGEN = [
+    { th: 1, t: "Welches Organ gehört zur Exekutive?", o: ["Bundestag", "Bundesregierung", "Bundesverfassungsgericht"], r: 1 },
+    { th: 1, t: "Welche Einrichtung ist kein Verfassungsorgan des Bundes?", o: ["Bundestag", "Bundesverfassungsgericht", "Stadtrat"], r: 2 },
+    { th: 1, t: "Zwei Fraktionen verhandeln nächtelang über einen Kompromiss. Welche Ecke des politischen Dreiecks ist das?", o: ["Polity", "Policy", "Politics"], r: 2 },
+    { th: 1, t: "Eine Partei schreibt in ihr Programm: „Bis 2035 sollen alle Schulen saniert sein.“ Welche Ecke ist das?", o: ["Polity", "Policy", "Politics"], r: 1 },
+    { th: 2, ziel: "fragen2b", label: "2b · Schritt 1: lesen", t: "Was erfährt ein Leser aus einer solchen Schlagzeile – wie die Rekruten aus der Mitteilung „eher beliebt“?",
+      o: ["dass kaum jemand so denkt", "dass viele andere so denken", "nichts darüber, wie andere denken"], r: 1 },
+    { th: 2, ziel: "fragen2b", label: "2b · Schritt 2: Einschätzung des Umfeldes", t: "Was folgt daraus für die Einschätzung des eigenen Umfeldes?",
+      o: ["Der Leser nimmt an, dass auch in seinem Umfeld viele autoritär denken – mehr, als es tatsächlich sind.", "Der Leser nimmt an, dass in seinem Umfeld niemand so denkt.", "Die Einschätzung ändert sich nicht – Schlagzeilen sagen nichts über das eigene Umfeld."], r: 0 },
+    { th: 2, ziel: "fragen2b", label: "2b · Schritt 3: eigene Haltung", t: "Was folgt daraus für die eigene Haltung?",
+      o: ["Alle Leser übernehmen die Haltung aus der Schlagzeile.", "Die eigene Haltung bleibt unberührt – es ändert sich nur das Bild von den anderen.", "Weil er glaubt, die anderen dächten so, rückt ein Teil der Leser nach und stimmt selbst eher zu."], r: 2 },
+    { th: 2, ziel: "fragen2b", label: "2b · Die Kette im Ganzen", t: "Welche Reihenfolge beschreibt die Ansteckung richtig?",
+      o: ["Schlagzeile lesen → eigene Haltung ändert sich → danach vermutet man dasselbe bei den anderen",
+          "Schlagzeile lesen → man glaubt, viele andere denken so → man passt die eigene Haltung an",
+          "Schlagzeile lesen → man lehnt die Aussage stärker ab → man hält die anderen für autoritär"], r: 1 },
+    { th: 2, ziel: "fragen2b", label: "2b · Zusatz: Framing der Zahlen", t: "„Jeder Dritte“ – was sagt die Schlagzeile zugleich, ohne es zu nennen?",
+      o: ["Die Mehrheit wünscht sich weniger Parlament.", "Die Zustimmung hat sich verdreifacht.", "Zwei von drei Befragten wünschen sich das nicht – die Schlagzeile kann ein falsches Mehrheitsbild erzeugen."], r: 2 },
+    { th: 2, ziel: "fragen2c", label: "2c · Schritt 1: Art. 20 (4) GG", t: "Wann dürfen sich Bürger in diesem Fall auf Art. 20 (4) GG berufen?",
+      o: ["sofort, sobald der Gesetzentwurf eingebracht wird", "erst, wenn andere Abhilfe – etwa durch Gerichte – nicht mehr möglich ist", "gar nicht – Widerstand steht nur Abgeordneten zu"], r: 1 },
+    { th: 2, ziel: "fragen2c", label: "2c · Schritt 2: Art. 79 (3) GG", t: "Was verhindert Art. 79 (3) GG?",
+      o: ["dass der Kern von Art. 20 GG, zu dem die Demokratie gehört, abgeschafft wird", "dass das Grundgesetz überhaupt geändert wird", "dass der Bundestag ohne den Bundespräsidenten entscheidet"], r: 0 },
+    { th: 2, ziel: "fragen2c", label: "2c · Schritt 3: Bezug zum Fall", t: "Die Regierung erreicht im Bundestag sogar eine 2/3-Mehrheit. Ändert das etwas?",
+      o: ["Ja – mit 2/3-Mehrheit darf jede Regel des Grundgesetzes geändert werden.", "Ja – dann entfällt auch das Widerstandsrecht.", "Nein – diesen Kern darf keine Mehrheit abschaffen, egal wie groß."], r: 2 },
+    { th: 3, t: "Ein Parlament hat 300 Mitglieder. Für eine Verfassungsänderung stimmen 190 mit Ja, 20 mit Nein, 90 fehlen. Ergebnis?", o: ["angenommen – deutlich mehr Ja als Nein", "abgelehnt – nötig wären 200 Ja-Stimmen", "ungültig – zu viele fehlen"], r: 1 },
+    { th: 3, t: "Über ein einfaches Gesetz stimmen 250 Abgeordnete mit Ja und 200 mit Nein, 100 enthalten sich. Ergebnis?", o: ["angenommen – mehr Ja- als Nein-Stimmen", "abgelehnt – keine Zweidrittelmehrheit", "abgelehnt – Enthaltungen zählen als Nein"], r: 0 },
+    { th: 3, t: "Ein Vorschlag lautet: Wer ein Unternehmen führt, erhält zwei Stimmen. Welcher Wahlrechtsgrundsatz wäre verletzt?", o: ["geheim", "gleich", "unmittelbar"], r: 1 },
+    { th: 4, ziel: "fragen4a", label: "4a · Fahrschüler", t: "Auf welches Grundrecht stützt sich der Fahrschüler?",
+      o: ["Versammlungsfreiheit, Art. 8 GG", "Meinungsfreiheit, Art. 5 (1) GG", "Berufsfreiheit, Art. 12 GG"], r: 1 },
+    { th: 4, ziel: "fragen4a", label: "4a · Fahrlehrer", t: "Auf welches Grundrecht stützt sich der Fahrlehrer, der seinen Ruf beschädigt sieht?",
+      o: ["allgemeines Persönlichkeitsrecht, Art. 2 (1) i. V. m. Art. 1 (1) GG", "Meinungsfreiheit, Art. 5 (1) GG", "Eigentum, Art. 14 GG"], r: 0 },
+    { th: 4, ziel: "fragen4b", label: "4b · Schritt 1: Lebensbereich", t: "Betrifft die Bewertung die berufliche Rolle des Fahrlehrers oder sein Privatleben?",
+      o: ["das Privatleben – dort ist er besonders geschützt", "die berufliche Rolle – Kritik daran muss er eher hinnehmen", "Das spielt für die Abwägung keine Rolle."], r: 1 },
+    { th: 4, ziel: "fragen4b", label: "4b · Schritt 2: Meinung oder Tatsache", t: "„Erklärt ungeduldig, die Stunden wirken schlecht vorbereitet“ – Meinung oder Tatsachenbehauptung?",
+      o: ["eine Tatsachenbehauptung – der Fahrschüler müsste sie beweisen", "weder noch – Sterne sind keine Äußerung", "eine Meinung – eine Wertung, die sich nicht beweisen oder widerlegen lässt"], r: 2 },
+    { th: 4, ziel: "fragen4b", label: "4b · Schritt 3: Sache oder Person", t: "Geht es um die Sache oder nur darum, den Fahrlehrer als Person herabzusetzen?",
+      o: ["um die Sache – den Unterricht; eine Schmähung liegt nicht vor", "um die Person – jede schlechte Bewertung setzt herab", "Das lässt sich bei anonymen Bewertungen nie sagen."], r: 0 },
+    { th: 4, ziel: "fragen4b", label: "4b · Urteil", t: "Zu welchem Ergebnis führt die Abwägung?",
+      o: ["Die Bewertung wird gelöscht – das Persönlichkeitsrecht geht immer vor.", "Die Bewertung wird gelöscht – anonyme Kritik ist nicht erlaubt.", "Die Bewertung bleibt – hier überwiegt die Meinungsfreiheit."], r: 2 },
+    { th: 4, ziel: "fragen4c", label: "4c · Satz 1", t: "„Ich würde diese Fahrschule niemandem empfehlen.“", o: ["Erlaubt – eine Meinung, Art. 5 (1) GG", "Nur erlaubt, wenn es wahr ist – eine Tatsachenbehauptung, Art. 5 (2) GG", "Nie erlaubt – verletzt die Menschenwürde, Art. 1 (1) GG"], r: 0 },
+    { th: 4, ziel: "fragen4c", label: "4c · Satz 2", t: "„Er hat in der Fahrstunde am Handy gespielt.“ (Belege gibt es dafür nicht.)", o: ["Erlaubt – eine Meinung, Art. 5 (1) GG", "Nur erlaubt, wenn es wahr ist – eine Tatsachenbehauptung, Art. 5 (2) GG", "Nie erlaubt – verletzt die Menschenwürde, Art. 1 (1) GG"], r: 1 },
+    { th: 4, ziel: "fragen4c", label: "4c · Satz 3", t: "„Dieser Mensch ist Abschaum.“", o: ["Erlaubt – eine Meinung, Art. 5 (1) GG", "Nur erlaubt, wenn es wahr ist – eine Tatsachenbehauptung, Art. 5 (2) GG", "Nie erlaubt – verletzt die Menschenwürde, Art. 1 (1) GG"], r: 2 }
+  ];
+  var stand = document.getElementById("standtext"), beantwortet = 0, richtig = 0;
+  function zeigeStand() {
+    stand.textContent = beantwortet + " von " + (FRAGEN.length + 1) + " Kreuzaufgaben beantwortet" + (beantwortet ? " · " + richtig + " richtig" : "");
+  }
+  var A2A = [
+    { t: "Nach der Mitteilung „eher unbeliebt“ stimmt etwa jeder Fünfte der Aussage selbst zu.", ok: true },
+    { t: "In beiden Gruppen stimmt die Mehrheit der Rekruten der Aussage zu.", ok: false },
+    { t: "Wer „eher beliebt“ las, vermutet deutlich häufiger Zustimmung bei den anderen als wer „eher unbeliebt“ las.", ok: true },
+    { t: "Rekruten sind autoritärer eingestellt als andere junge Menschen.", ok: false }
+  ];
+  function baue2a() {
+    var feld = document.getElementById("a2aopt"), btn = document.getElementById("a2abtn"), erkl = document.getElementById("a2aerkl"),
+        box = document.getElementById("a2a");
+    feld.innerHTML = ""; box.classList.remove("fertig"); btn.disabled = true; btn.style.display = ""; erkl.textContent = "";
+    var knoepfe = [];
+    A2A.forEach(function (a) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = a.t; b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () {
+        if (box.classList.contains("fertig")) return;
+        var an = b.classList.toggle("gewaehlt"); b.setAttribute("aria-pressed", an ? "true" : "false");
+        btn.disabled = feld.querySelectorAll(".gewaehlt").length !== 2;
+      });
+      knoepfe.push(b); feld.appendChild(b);
+    });
+    btn.onclick = function () {
+      var treffer = 0;
+      knoepfe.forEach(function (b, i) {
+        var gew = b.classList.contains("gewaehlt"); b.disabled = true; b.classList.remove("gewaehlt");
+        if (A2A[i].ok) b.classList.add("richtig");
+        if (gew && A2A[i].ok) { treffer++; b.textContent = "✓ " + A2A[i].t; }
+        if (gew && !A2A[i].ok) { b.classList.add("falsch"); b.textContent = "✗ " + A2A[i].t; }
+      });
+      box.classList.add("fertig"); btn.style.display = "none"; beantwortet++;
+      if (treffer === 2) { richtig++; erkl.textContent = "Beide richtig."; }
+      else erkl.textContent = treffer + " von 2 richtig. Prüfen Sie jede Aussage Zahl für Zahl an der Tabelle. Nachlesen: " + LESEN[2] + ".";
+      zeigeStand();
+    };
+  }
+  function baue() {
+    beantwortet = 0; richtig = 0;
+    ["fragen1", "fragen3", "fragen2b", "fragen2c", "fragen4a", "fragen4b", "fragen4c"].forEach(function (id) { document.getElementById(id).innerHTML = ""; });
+    baue2a();
+    var zaehler = {};
+    FRAGEN.forEach(function (f) {
+      zaehler[f.th] = (zaehler[f.th] || 0) + 1;
+      var box = document.createElement("div"); box.className = "frage";
+      var p = document.createElement("p"); p.className = "text";
+      var nr = document.createElement("span"); nr.className = "nr"; nr.textContent = (f.label ? "Aufgabe " + f.label : "Aufgabe " + f.th + "." + zaehler[f.th]) + " · ";
+      p.appendChild(nr); p.appendChild(document.createTextNode(f.t)); box.appendChild(p);
+      var e = document.createElement("div"); e.className = "erkl";
+      f.o.forEach(function (text, k) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = text;
+        b.addEventListener("click", function () {
+          if (box.classList.contains("fertig")) return;
+          box.classList.add("fertig"); beantwortet++;
+          var alle = box.querySelectorAll("button.opt");
+          for (var j = 0; j < alle.length; j++) { alle[j].disabled = true; if (j === f.r) alle[j].classList.add("richtig"); }
+          if (k === f.r) { richtig++; b.textContent = "✓ " + text; e.textContent = "Richtig."; }
+          else { b.classList.add("falsch"); b.textContent = "✗ " + text; e.textContent = "Noch nicht richtig. Nachlesen: " + LESEN[f.th] + "."; }
+          zeigeStand();
+        });
+        box.appendChild(b);
+      });
+      box.appendChild(e);
+      document.getElementById(f.ziel || "fragen" + f.th).appendChild(box);
+    });
+    zeigeStand();
+  }
+  document.getElementById("neu").addEventListener("click", function () {
+    baue(); var ta = document.querySelectorAll("textarea"); for (var i = 0; i < ta.length; i++) ta[i].value = "";
+    var sk = document.querySelectorAll(".selbst input"); for (var k = 0; k < sk.length; k++) sk[k].checked = false;
+    document.getElementById("t1").scrollIntoView();
+  });
+  baue();
+
+  var boxen = document.querySelectorAll("#liste input"), KEY = "ka1-pug-check", gemerkt = [];
+  try { gemerkt = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (err) { gemerkt = []; }
+  for (var i = 0; i < boxen.length; i++) {
+    boxen[i].checked = !!gemerkt[i];
+    boxen[i].addEventListener("change", function () {
+      var z = []; for (var j = 0; j < boxen.length; j++) z.push(boxen[j].checked);
+      try { localStorage.setItem(KEY, JSON.stringify(z)); } catch (err) {}
+    });
+  }
+})();
+</script>
+</body>
+</html>
